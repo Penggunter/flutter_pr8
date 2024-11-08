@@ -10,7 +10,12 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      title: 'Flutter pr8',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 241, 222, 14)),
+        useMaterial3: true,
+      ),
       home: HomePage()
     );
   }
