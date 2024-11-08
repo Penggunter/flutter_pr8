@@ -17,23 +17,82 @@ class _HomePageState extends State<HomePage> {
     'https://sun9-77.userapi.com/s/v1/ig2/I2-ur_xSDmpf7iHu8qQ6b9YDJn8nPtCQomqQqJYALOOgB5Fm19K6yf_1u3lsVa1Sscr2nCYknTeKufEmis4CSJel.jpg?quality=96&as=32x15,48x22,72x33,108x49,160x73,240x110,360x164,480x219,540x246,640x292,720x329,881x402&from=bu&u=SUzKW1XIYpRqHcgN1OILqJ_RB5SWdm-qZL0KLQekfZ4&cs=807x368'
   ];
 
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+
+  // Функция для перехода на предыдущий слайд
+  void _previousPage() {
+    if (_currentPage > 0) {
+      setState(() {
+        _currentPage--;
+      });
+      _pageController.animateToPage(
+        _currentPage,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  // Функция для перехода на следующий слайд
+  void _nextPage() {
+    if (_currentPage < _imageUrls.length - 1) {
+      setState(() {
+        _currentPage++;
+      });
+      _pageController.animateToPage(
+        _currentPage,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        itemCount: _imageUrls.length,
-        itemBuilder: (context, index) => Card(
-          child: ListTile(
-            leading: CachedNetworkImage(
-              fit: BoxFit.fitWidth,
-              imageUrl: _imageUrls[index],
-              placeholder: (context, url) => const CircularProgressIndicator(),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-              ),
+      appBar: AppBar(title: Text('Flutter pr8')),
+      body: Column(
+        children: [
+          Expanded(
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: _imageUrls.length,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentPage = index;
+                });
+              },
+              itemBuilder: (context, index) {
+                return CachedNetworkImage(
+                  imageUrl: _imageUrls[index],
+                  placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                );
+              },
+            ),
           ),
-        ),
-      )
-  
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: _previousPage,
+                child: Text('Назад'),
+              ),
+              SizedBox(width: 20),
+              ElevatedButton(
+                onPressed: _nextPage,
+                child: Text('Вперёд'),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+        ],
+      ),
     );
   }
 }
